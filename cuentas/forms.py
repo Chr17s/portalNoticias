@@ -6,10 +6,17 @@ from .models import Usuario
 class FormularioCreacionUsuario(UserCreationForm):
     class Meta:
         model = Usuario
-        fields = UserCreationForm.Meta.fields + ('edad',)
+        fields = (
+            'username',
+            'email',
+            'edad',
+        )
 
 class FormularioModificacionUsuario(UserChangeForm):
     class Meta:
         model = Usuario
-        fields = UserChangeForm.Meta.fields
-
+        fields = (
+            'username',
+            'email',
+            'edad',
+        )
