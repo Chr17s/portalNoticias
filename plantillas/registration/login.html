@@ -1,27 +1,40 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
-{% block title %}Iniciar Sesión - Portal de Noticias{% endblock %}
+{% block title %}Iniciar Sesión - El Periódico{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-5">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-dark text-white text-center py-3">
-                <h4 class="mb-0"><i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión</h4>
-            </div>
-            <div class="card-body p-4">
+<div class="row justify-content-center align-items-center mt-5 mb-5">
+    <div class="col-md-6 col-lg-4 mt-4">
+        
+        <!-- Cabecera Elegante -->
+        <div class="text-center mb-5">
+            <i class="bi bi-newspaper display-4 text-dark mb-3 d-block"></i>
+            <h2 class="font-serif fw-bold text-dark" style="letter-spacing: -0.5px;">Bienvenido de nuevo</h2>
+            <p class="text-muted mt-2">Inicia sesión para continuar leyendo.</p>
+        </div>
+        
+        <!-- Formulario Limpio -->
+        <div class="card border-0 shadow-sm p-4 rounded-4 bg-white">
+            <div class="card-body">
                 <form method="post">
                     {% csrf_token %}
                     {{ form|crispy }}
                     <div class="d-grid mt-4">
-                        <button type="submit" class="btn btn-dark btn-lg">Entrar</button>
+                        <button type="submit" class="btn btn-dark btn-lg rounded-pill fw-bold">Iniciar Sesión</button>
                     </div>
                 </form>
             </div>
-            <div class="card-footer text-center bg-white py-3">
-                <small class="text-muted">¿No tienes cuenta? <a href="{% url 'registro' %}">Regístrate aquí</a></small>
-            </div>
+        </div>
+        
+        <!-- Enlace a Registro -->
+        <div class="text-center mt-4">
+            <a href="{% url 'password_reset' %}" class="text-muted small text-decoration-none mb-4 d-inline-block">¿Olvidaste tu contraseña?</a>
+            
+            <p class="text-muted small mt-2">
+                ¿No tienes una cuenta? 
+                <a href="{% url 'registro' %}" class="text-dark fw-bold text-decoration-none border-bottom border-dark pb-1 ms-1">Suscríbete aquí</a>
+            </p>
         </div>
     </div>
 </div>

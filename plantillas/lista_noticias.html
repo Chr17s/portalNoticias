@@ -1,91 +1,96 @@
 {% extends 'base.html' %}
 
-{% block title %}Inicio - Últimas Noticias{% endblock %}
+{% block title %}Última Hora - El Periódico{% endblock %}
 
 {% block content %}
-<div class="row mb-4">
+<div class="row mb-5 align-items-end">
     <div class="col-md-7">
-        <h1 class="display-5 fw-bold text-dark">Últimas Noticias</h1>
-        <p class="lead text-muted">Mantente informado con los acontecimientos más recientes.</p>
+        <h1 class="font-serif fw-bold display-4 mb-1 text-dark">Última Hora</h1>
+        <p class="text-muted mb-0">Las noticias más relevantes del momento.</p>
     </div>
     
-    <div class="col-md-5 text-end align-self-center">
-        <form method="GET" action="{% url 'lista_noticias' %}" class="input-group">
-            <input type="text" name="q" class="form-control" placeholder="Buscar por título o categoría..." value="{{ request.GET.q }}">
-            <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i> Buscar</button>
+    <div class="col-md-5 mt-4 mt-md-0">
+        <form method="GET" action="{% url 'lista_noticias' %}" class="d-flex border-bottom border-dark pb-1">
+            <input type="text" name="q" class="form-control border-0 bg-transparent px-0 shadow-none rounded-0" placeholder="Buscar artículos o temas..." value="{{ request.GET.q }}">
+            <button class="btn btn-link text-dark px-2 text-decoration-none" type="submit"><i class="bi bi-search"></i></button>
             {% if request.GET.q or request.GET.categoria %}
-                <a href="{% url 'lista_noticias' %}" class="btn btn-outline-danger" title="Limpiar filtros"><i class="bi bi-x-circle"></i></a>
+                <a href="{% url 'lista_noticias' %}" class="btn btn-link text-danger px-2 text-decoration-none" title="Limpiar filtros"><i class="bi bi-x-lg"></i></a>
             {% endif %}
         </form>
     </div>
 </div>
 
-<div class="mb-4 d-flex flex-wrap gap-2">
-    <span class="fw-bold me-2 align-self-center"><i class="bi bi-funnel"></i> Filtrar:</span>
-    <a href="{% url 'lista_noticias' %}" class="btn btn-sm {% if not request.GET.categoria %}btn-dark{% else %}btn-outline-dark{% endif %}">
-        Todas
-    </a>
+<div class="d-flex flex-wrap gap-4 mb-5 border-bottom pb-2">
+    <a href="{% url 'lista_noticias' %}" class="text-decoration-none {% if not request.GET.categoria %}text-dark fw-bold border-bottom border-2 border-dark pb-2 mb-n2{% else %}text-muted{% endif %}">Todos</a>
     {% for cat in categorias_list %}
-        <a href="?categoria={{ cat.id }}" class="btn btn-sm {% if request.GET.categoria == cat.id|stringformat:'s' %}btn-info{% else %}btn-outline-info text-dark{% endif %}">
+        <a href="?categoria={{ cat.id }}" class="text-decoration-none {% if request.GET.categoria == cat.id|stringformat:'s' %}text-dark fw-bold border-bottom border-2 border-dark pb-2 mb-n2{% else %}text-muted{% endif %}">
             {{ cat.nombre }}
         </a>
     {% endfor %}
 </div>
 
-<hr class="mb-4">
-
-<div class="row row-cols-1 row-cols-md-3 g-4">
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-5">
     {% for noticia in noticias %}
         <div class="col">
-            <div class="card h-100 shadow-sm border-0">
+            <div class="card card-noticia h-100">
                 {% if noticia.imagen %}
-                    <img src="{{ noticia.imagen.url }}" class="card-img-top" alt="{{ noticia.titulo }}" style="height: 200px; object-fit: cover;">
+                    <a href="{% url 'detalle_noticia' noticia.pk %}">
+                        <img src="{{ noticia.imagen.url }}" class="card-img-top rounded-0" alt="{{ noticia.titulo }}" style="height: 240px; object-fit: cover;">
+                    </a>
                 {% else %}
-                    <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center text-white" style="height: 200px;">
-                        <i class="bi bi-image" style="font-size: 3rem;"></i>
-                    </div>
+                    <a href="{% url 'detalle_noticia' noticia.pk %}">
+                        <div class="card-img-top rounded-0 bg-light d-flex align-items-center justify-content-center" style="height: 240px;">
+                            <i class="bi bi-camera text-muted opacity-25" style="font-size: 3rem;"></i>
+                        </div>
+                    </a>
                 {% endif %}
                 
-                <div class="card-body">
+                <div class="card-body px-0 pt-3 pb-0">
                     {% if noticia.categoria %}
-                        <span class="badge bg-info text-dark mb-2">{{ noticia.categoria.nombre }}</span>
+                        <a href="?categoria={{ noticia.categoria.id }}" class="badge-categoria mb-2 d-inline-block">{{ noticia.categoria.nombre }}</a>
                     {% endif %}
-                    <h5 class="card-title fw-bold">{{ noticia.titulo }}</h5>
-                    <p class="card-text text-muted small">
-                        {{ noticia.contenido|truncatewords:20 }}
+                    
+                    <h4 class="card-title font-serif fw-bold mb-2">
+                        <a href="{% url 'detalle_noticia' noticia.pk %}" class="text-dark text-decoration-none stretched-link">
+                            {{ noticia.titulo }}
+                        </a>
+                    </h4>
+                    
+                    <p class="card-text text-muted small mb-3">
+                        {{ noticia.contenido|truncatewords:18 }}
                     </p>
                 </div>
-                <div class="card-footer bg-white border-top-0 d-flex justify-content-between align-items-center">
-                    <small class="text-muted"><i class="bi bi-calendar3"></i> {{ noticia.fecha_publicacion|date:"d M, Y" }}</small>
-                    <a href="{% url 'detalle_noticia' noticia.pk %}" class="btn btn-sm btn-outline-primary">Leer más</a>
+                
+                <div class="card-footer bg-transparent px-0 border-0 pt-0 d-flex justify-content-between align-items-center">
+                    <small class="text-dark fw-semibold">{{ noticia.autor.username }}</small>
+                    <small class="text-muted"><i class="bi bi-clock me-1"></i>{{ noticia.fecha_publicacion|date:"d M, Y" }}</small>
                 </div>
             </div>
         </div>
     {% empty %}
         <div class="col-12 text-center py-5">
-            <i class="bi bi-newspaper text-muted" style="font-size: 4rem;"></i>
-            <h3 class="mt-3 text-muted">Aún no hay noticias publicadas</h3>
-            {% if request.user.is_authenticated %}
-                <a href="{% url 'crear_noticia' %}" class="btn btn-primary mt-2">Crear la primera noticia</a>
-            {% endif %}
+            <i class="bi bi-journal-x display-1 text-muted opacity-25 mb-3"></i>
+            <h3 class="font-serif text-dark">No se encontraron artículos</h3>
+            <p class="text-muted">Intenta buscar con otros términos o limpia los filtros actuales.</p>
         </div>
     {% endfor %}
 </div>
-</div> {% if is_paginated %}
-<nav aria-label="Navegación de páginas" class="mt-5">
-    <ul class="pagination justify-content-center">
+
+{% if is_paginated %}
+<nav aria-label="Navegación de páginas" class="mt-5 pt-5 border-top">
+    <ul class="pagination justify-content-center gap-2">
         {% if page_obj.has_previous %}
-            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}">Anterior</a></li>
+            <li class="page-item"><a class="page-link text-dark border-0 bg-transparent fw-bold" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}"><i class="bi bi-arrow-left me-1"></i> Anterior</a></li>
         {% else %}
-            <li class="page-item disabled"><span class="page-link">Anterior</span></li>
+            <li class="page-item disabled"><span class="page-link border-0 bg-transparent text-muted"><i class="bi bi-arrow-left me-1"></i> Anterior</span></li>
         {% endif %}
 
-        <li class="page-item active"><span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span></li>
+        <li class="page-item active"><span class="page-link bg-dark border-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">{{ page_obj.number }}</span></li>
 
         {% if page_obj.has_next %}
-            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}">Siguiente</a></li>
+            <li class="page-item"><a class="page-link text-dark border-0 bg-transparent fw-bold" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}">Siguiente <i class="bi bi-arrow-right ms-1"></i></a></li>
         {% else %}
-            <li class="page-item disabled"><span class="page-link">Siguiente</span></li>
+            <li class="page-item disabled"><span class="page-link border-0 bg-transparent text-muted">Siguiente <i class="bi bi-arrow-right ms-1"></i></span></li>
         {% endif %}
     </ul>
 </nav>
