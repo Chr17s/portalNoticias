@@ -40,3 +40,13 @@ class Comentario(models.Model):
 
     def __str__(self):
         return f"Comentario de {self.usuario.username} en {self.noticia.titulo}"
+    
+class Notificacion(models.Model):
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='notificaciones')
+    mensaje = models.CharField(max_length=255)
+    url = models.CharField(max_length=255) # Hacia dónde irá al hacer clic
+    leida = models.BooleanField(default=False)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Notificación para {self.usuario.username}: {self.mensaje}"

@@ -32,6 +32,28 @@
             </div>
         {% endif %}
 
+        <p class="text-muted">
+            Por <strong>{{ noticia.autor.username }}</strong> | {{ noticia.fecha_publicacion|date:"d M, Y" }}
+            {% if noticia.categoria %} 
+                | <span class="badge bg-info text-dark">{{ noticia.categoria.nombre }}</span>
+            {% endif %}
+        </p>
+
+        <div class="mb-3">
+            <form action="{% url 'me_gusta_noticia' noticia.pk %}" method="POST" class="d-inline">
+                {% csrf_token %}
+                {% if request.user.is_authenticated %}
+                    {% if request.user in noticia.likes.all %}
+                        <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-heart-fill"></i> Me gusta ({{ noticia.total_likes }})</button>
+                    {% else %}
+                        <button type="submit" class="btn btn-outline-danger btn-sm"><i class="bi bi-heart"></i> Me gusta ({{ noticia.total_likes }})</button>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-heart"></i> {{ noticia.total_likes }} Likes</a>
+                {% endif %}
+            </form>
+        </div>
+
         <<div class="mt-5 mb-5">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4 class="mb-0"><i class="bi bi-chat-left-text"></i> Comentarios ({{ noticia.comentarios.count }})</h4>

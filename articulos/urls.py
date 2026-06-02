@@ -5,7 +5,10 @@ from .views import (
     CrearNoticiaView,
     EditarNoticiaView,
     EliminarNoticiaView,
-    CrearComentarioView
+    CrearComentarioView,
+    ParaTiView,
+    me_gusta_noticia,
+    leer_notificaciones,
 )
 
 urlpatterns = [
@@ -18,4 +21,9 @@ urlpatterns = [
     
     # Comentarios
     path('noticia/<int:pk>/comentar/', CrearComentarioView.as_view(), name='crear_comentario'),
+
+    path('noticia/<int:pk>/like/', me_gusta_noticia, name='me_gusta_noticia'),
+
+    path('para-ti/', ParaTiView.as_view(), name='para_ti'),
+    path('notificaciones/leer/', leer_notificaciones, name='leer_notificaciones'),
 ]

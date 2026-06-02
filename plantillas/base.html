@@ -23,25 +23,68 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'lista_noticias' %}">Inicio</a>
                     </li>
-                    </ul>
+                </ul>
                 
-                <ul class="navbar-nav">
+                <ul class="navbar-nav d-flex align-items-center">
+                    
+                    <li class="nav-item me-3">
+                        <button class="btn btn-sm btn-outline-light me-1" onclick="cambiarTamanoTexto(1)" title="Aumentar texto">A+</button>
+                        <button class="btn btn-sm btn-outline-light me-1" onclick="cambiarTamanoTexto(-1)" title="Reducir texto">A-</button>
+                        <button class="btn btn-sm btn-outline-warning" onclick="toggleContraste()" title="Alto Contraste"><i class="bi bi-circle-half"></i></button>
+                    </li>
+
                     {% if request.user.is_authenticated %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                Hola, {{ request.user.username }}
+                        
+                        <li class="nav-item me-3">
+                            <a class="nav-link text-warning fw-bold" href="{% url 'para_ti' %}"><i class="bi bi-star-fill"></i> Para Ti</a>
+                        </li>
+
+                        <li class="nav-item dropdown me-3">
+                            <a class="nav-link text-white position-relative" href="#" id="notifDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-bell-fill fs-5"></i>
+                                {% if user.notificaciones.all %}
+                                    <span class="position-absolute top-25 start-75 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                                {% endif %}
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Mi Perfil</a></li>
-                                <li><a class="dropdown-item" href="{% url 'crear_noticia' %}">Crear Noticia</a></li>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg" style="width: 300px;" aria-labelledby="notifDropdown">
+                                <li class="dropdown-header d-flex justify-content-between">
+                                    <span>Notificaciones</span>
+                                    <a href="{% url 'leer_notificaciones' %}" class="text-decoration-none small text-muted"><i class="bi bi-check2-all"></i> Marcar leídas</a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                {% for notif in user.notificaciones.all|slice:":5" %}
+                                    <li>
+                                        <a class="dropdown-item py-2 {% if not notif.leida %}bg-light fw-bold{% endif %}" href="{{ notif.url }}">
+                                            <small><i class="bi bi-info-circle text-primary"></i> {{ notif.mensaje }}</small>
+                                        </a>
+                                    </li>
+                                {% empty %}
+                                    <li><span class="dropdown-item text-muted small">No tienes notificaciones.</span></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {% if user.avatar %}
+                                    <img src="{{ user.avatar.url }}" alt="Avatar" class="rounded-circle me-2 shadow-sm" style="width: 32px; height: 32px; object-fit: cover;">
+                                {% else %}
+                                    <i class="bi bi-person-circle fs-4 me-2 text-primary"></i>
+                                {% endif %}
+                                <span class="fw-semibold">{{ user.username }}</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{% url 'perfil' %}"><i class="bi bi-person"></i> Mi Perfil</a></li>
+                                <li><a class="dropdown-item" href="{% url 'password_change' %}"><i class="bi bi-key"></i> Cambiar Contraseña</a></li>
+                                <li><a class="dropdown-item" href="{% url 'crear_noticia' %}"><i class="bi bi-pencil-square"></i> Crear Noticia</a></li>
                                 {% if request.user.is_staff %}
-                                    <li><a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard Admin</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'dashboard' %}"><i class="bi bi-speedometer2"></i> Dashboard Admin</a></li>
                                 {% endif %}
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="post" action="{% url 'logout' %}">
                                         {% csrf_token %}
-                                        <button type="submit" class="dropdown-item text-danger">Cerrar Sesión</button>
+                                        <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</button>
                                     </form>
                                 </li>
                             </ul>
@@ -80,5 +123,32 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Accesibilidad: Tamaño de Texto
+        let textoEscala = 1;
+        function cambiarTamanoTexto(direccion) {
+            textoEscala += (direccion * 0.1);
+            if (textoEscala < 0.8) textoEscala = 0.8;
+            if (textoEscala > 1.5) textoEscala = 1.5;
+            document.body.style.fontSize = textoEscala + 'em';
+        }
+
+        // Accesibilidad: Alto Contraste (Inversión visual CSS pura)
+        let contrasteAlto = false;
+        function toggleContraste() {
+            contrasteAlto = !contrasteAlto;
+            if (contrasteAlto) {
+                document.documentElement.style.filter = 'invert(1) hue-rotate(180deg)';
+                // Evitamos que las imágenes se vean como rayos X
+                const imgs = document.querySelectorAll('img');
+                imgs.forEach(img => img.style.filter = 'invert(1) hue-rotate(180deg)');
+            } else {
+                document.documentElement.style.filter = 'none';
+                const imgs = document.querySelectorAll('img');
+                imgs.forEach(img => img.style.filter = 'none');
+            }
+        }
+    </script>
 </body>
 </html>
