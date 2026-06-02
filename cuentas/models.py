@@ -1,6 +1,10 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 
-# Create your models here.
-class Usuario(AbstractUser):
-    edad = models.PositiveIntegerField(null=True, blank=True)
+class CustomUser(AbstractUser):
+    # AbstractUser ya incluye username, email, first_name y last_name.
+    avatar = models.ImageField(upload_to='perfiles/', blank=True, null=True)
+    biografia = models.TextField(blank=True, null=True)
+    
+    def __str__(self):
+        return self.username

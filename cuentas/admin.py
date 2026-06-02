@@ -1,20 +1,20 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .forms import FormularioCreacionUsuario, FormularioModificacionUsuario
-from .models import Usuario
+from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .models import CustomUser
 
-class UsuarioAdmin(UserAdmin):
-    add_form = FormularioCreacionUsuario
-    form = FormularioModificacionUsuario
-    model = Usuario
-    list_display = [ 'email', 'username', 'edad', 'is_staff']
-    fieldsets = UserAdmin.fieldsets + ((None, {'fields': ('edad',)}),)
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('username', 'email', 'edad', 'password1', 'password2'),
-        }),
+class CustomUserAdmin(UserAdmin):
+    add_form = CustomUserCreationForm
+    form = CustomUserChangeForm
+    model = CustomUser
+    list_display = ['username', 'email', 'first_name', 'last_name', 'is_staff']
+    
+    # Agrupamos los campos para que se vean bien en el panel de edición
+    fieldsets = UserAdmin.fieldsets + (
+        (None, {'fields': ()}),
+    )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        (None, {'fields': ('email', 'first_name', 'last_name')}),
     )
 
-# Register your models here.
-admin.site.register(Usuario, UsuarioAdmin)
+admin.site.register(CustomUser, CustomUserAdmin)

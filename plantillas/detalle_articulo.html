@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block contenido %}
+<div class="entrada-articulo">
+    <h2>{{ object.titulo }}</h2>
+    <p><i>por {{ object.autor }} | {{ object.fecha }}</i></p>
+    <p>{{ object.contenido }}</p>
+</div>
+<hr>
+<h4>Comentarios</h4>
+{% for comentario in articulo.comentario_set.all %}
+<p>{{ comentario.autor }} &middot; {{ comentario }}</p>
+{% endfor %}
+<hr>
+<h4>Agregue un Comentario</h4>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ formulario|crispy }}
+    <button type="submit" class="btn btn-success">Guardar</button>
+</form>
+<div>
+{% if articulo.autor.pk == request.user.pk %}
+    <p><a href="{% url 'editar_articulo' articulo.pk %}">Editar</a> | 
+    <a href="{% url 'eliminar_articulo' articulo.pk %}">Eliminar</a></p>
+{% endif %}
+    <p>Volver a <a href="{% url 'lista_articulos' %}"> Todos los Articulos </a></p>
+</div>
+{% endblock contenido %}

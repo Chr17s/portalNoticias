@@ -1,10 +1,8 @@
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
-from .forms import FormularioCreacionUsuario
+from django.views.generic.edit import CreateView
+from .forms import CustomUserCreationForm
 
-
-# Create your views here.
-class VistaRegistro(CreateView):
-    template_name = 'registration/signup.html'
-    form_class = FormularioCreacionUsuario
+class RegistroUsuarioView(CreateView):
+    form_class = CustomUserCreationForm
     success_url = reverse_lazy('login')
+    template_name = 'registro.html' # Este archivo HTML lo crearemos e integraremos con Bootstrap en la Fase 4

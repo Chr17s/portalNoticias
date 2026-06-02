@@ -1,22 +1,12 @@
-# cuentas/forms.py
-
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import Usuario
+from .models import CustomUser
 
-class FormularioCreacionUsuario(UserCreationForm):
+class CustomUserCreationForm(UserCreationForm):
     class Meta:
-        model = Usuario
-        fields = (
-            'username',
-            'email',
-            'edad',
-        )
+        model = CustomUser
+        fields = ('username', 'email', 'first_name', 'last_name')
 
-class FormularioModificacionUsuario(UserChangeForm):
+class CustomUserChangeForm(UserChangeForm):
     class Meta:
-        model = Usuario
-        fields = (
-            'username',
-            'email',
-            'edad',
-        )
+        model = CustomUser
+        fields = ('username', 'email', 'first_name', 'last_name')

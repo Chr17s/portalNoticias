@@ -1,12 +1,28 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
+{% block title %}Iniciar Sesión - Portal de Noticias{% endblock %}
 
-{% block titulo %} - Ingreso{% endblock titulo %}
-{% block contenido %}
-    <h2>Ingreso</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Iniciar sesión</button>
-    </form>
-{% endblock contenido %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-dark text-white text-center py-3">
+                <h4 class="mb-0"><i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión</h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-dark btn-lg">Entrar</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center bg-white py-3">
+                <small class="text-muted">¿No tienes cuenta? <a href="{% url 'registro' %}">Regístrate aquí</a></small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
