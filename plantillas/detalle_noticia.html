@@ -84,8 +84,7 @@
 
         <!-- Sección de Comentarios -->
         <div class="mt-5 mb-5">
-            <h3 class="fw-bold mb-4">Conversación <span class="text-muted fs-5">({{ noticia.comentario_set.count }})</span></h3>
-
+            <h3 class="fw-bold mb-4">Conversación <span class="text-muted fs-5">({{ noticia.comentarios.count }})</span></h3>
             <!-- Formulario de Comentario Limpio -->
             {% if request.user.is_authenticated %}
                 <div class="d-flex mb-5">
@@ -113,7 +112,7 @@
 
             <!-- Lista de Comentarios Estilizada -->
             <div class="comentarios-lista">
-                {% for comentario in noticia.comentario_set.all|dictsortreversed:"fecha_creacion" %}
+                {% for comentario in noticia.comentarios.all|dictsortreversed:"fecha_creacion" %}
                     <div class="d-flex mb-4">
                         {% if comentario.usuario.avatar %}
                             <img src="{{ comentario.usuario.avatar.url }}" class="rounded-circle me-3 mt-1" width="40" height="40" style="object-fit: cover;">

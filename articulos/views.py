@@ -81,13 +81,19 @@ class EliminarNoticiaView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 # --- Vistas de Comentarios ---
 
 class CrearComentarioView(LoginRequiredMixin, CreateView):
-    # ... deja tus atributos de clase igual ...
+    model = Comentario              # <-- ¡Esto es lo que Django te estaba pidiendo!
+    fields = ['contenido']          # <-- El campo que llenará el usuario
+
+    def get_success_url(self):
+        # Para que después de comentar, te regrese a la misma noticia
+        return reverse_lazy('detalle_noticia', kwargs={'pk': self.kwargs['pk']})
+
     def form_valid(self, form):
         form.instance.usuario = self.request.user
         noticia = get_object_or_404(Noticia, pk=self.kwargs['pk'])
         form.instance.noticia = noticia
         
-        # NUEVO: Generar Notificación de Comentario
+        # Lógica de Notificaciones
         if self.request.user != noticia.autor:
             Notificacion.objects.create(
                 usuario=noticia.autor,
