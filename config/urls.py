@@ -1,9 +1,11 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.static import serve
 
 urlpatterns = [
+    
     path('admin/', admin.site.urls),
     
     # 1. URLs de Autenticación oficiales de Django (Login, Logout, Password Reset)
@@ -16,6 +18,12 @@ urlpatterns = [
     path('', include('articulos.urls')),
 
     path('', include('paginas.urls')),
+]
+
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', serve, {
+        'document_root': settings.MEDIA_ROOT,
+    }),
 ]
 
 # Configuración obligatoria para poder ver las imágenes subidas en entorno de desarrollo
